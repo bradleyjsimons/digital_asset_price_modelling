@@ -2,7 +2,15 @@
 
 ## Description
 
-This project aims to predict Bitcoin prices using a combination of blockchain metrics, market data, and reinforcement learning algorithms. It's currently in progress and includes data retrieval from blockchain.com and Yahoo Finance, data preprocessing and cleaning, and the addition of technical indicators into a Pandas DataFrame. The next steps will involve feature engineering, optimization, and developing a reinforcement learning environment.
+This project aims to predict Bitcoin prices using a combination of blockchain metrics, market data, and reinforcement learning algorithms. The current progress includes:
+
+- Retrieval of Bitcoin candle data from Yahoo Finance.
+- Retrieval of blockchain metrics such as mempool size, total hash rate, miner revenue, and others from blockchain.com's charts API.
+- Addition of various technical indicators like RSI, CCI, ATR, on-balance volume, stochastic oscillators, etc., into a comprehensive Pandas DataFrame.
+- Data preprocessing and cleaning.
+- Feature extraction using an LSTM neural network, with the extracted features added to the dataset.
+
+The next steps will focus on feature selection to determine the most impactful features for our modeling.
 
 ## Installation
 
