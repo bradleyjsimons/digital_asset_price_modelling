@@ -1,0 +1,19 @@
+# Coverage reports
+.coverage
+htmlcov/
+
+# Environment configuration
+.env
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# pytest cache
+.pytest_cache/
+
+# VS Code settings
+.vscode/
+
+# macOS files
+.DS_Store
