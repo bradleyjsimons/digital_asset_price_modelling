@@ -1,32 +1,60 @@
 # Bitcoin Price Prediction: Integrating Blockchain and Market Data with Reinforcement Learning
 
 ## Description
-This project is a sophisticated approach to predict Bitcoin prices using a combination of blockchain metrics, market data, and advanced reinforcement learning algorithms. The current state includes:
 
-- Data retrieval from blockchain.com for blockchain metrics and Yahoo Finance for market data.
-- Data preprocessing and cleaning to ensure quality and consistency.
-- Addition of technical indicators and blockchain metrics as features in a comprehensive Pandas DataFrame.
-- Ongoing work includes feature engineering and optimization to identify the most impactful features.
-
-The upcoming phases will involve:
-- Developing a reinforcement learning environment using Proximal Policy Optimization for price prediction.
-- Rigorous backtesting of the model to validate its performance.
-
-Each component of the project is thoroughly tested to ensure reliability and accuracy.
+This project aims to predict Bitcoin prices using a combination of blockchain metrics, market data, and reinforcement learning algorithms. It's currently in progress and includes data retrieval from blockchain.com and Yahoo Finance, data preprocessing and cleaning, and the addition of technical indicators into a Pandas DataFrame. The next steps will involve feature engineering, optimization, and developing a reinforcement learning environment.
 
 ## Installation
-(Instructions on how to install and set up the project.)
+
+To set up this project:
+
+1. Clone the repository:
+
+   ```
+   git clone [repository URL]
+   ```
+
+2. Navigate to the project directory:
+
+   ```
+   cd [project directory]
+   ```
+
+3. Create a Conda environment:
+
+   ```
+   conda create --name myenv python=3.x
+   ```
+
+4. Activate the environment:
+
+   ```
+   conda activate myenv
+   ```
+
+5. Install required packages:
+   ```
+   pip install -r requirements.txt
+   ```
 
 ## Usage
-(How to use the project in its current state.)
+
+Run the project using:
+
+```
+python main.py
+```
+
+(Detailed usage instructions will be updated as the project evolves.)
 
 ## Contributing
-(Guidelines for contributing to this project.)
+
+Contributions are welcome, particularly in areas like model improvement, data processing, and code optimization. Please submit a pull request with your proposed changes.
 
 ## License
+
 This project is licensed under the MIT License - see the LICENSE.md file for details.
 
 ## Contact
-bradleyjsimons@velveteen.ai
 
-## Acknowledgments
+bradleyjsimons@velveteen.ai
