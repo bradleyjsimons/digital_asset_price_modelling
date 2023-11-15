@@ -1,4 +1,4 @@
-# BTC Price Prediction: Integrating Blockchain and Market Data with Reinforcement Learning
+# BTC Price Modeling: Integrating Blockchain and Market Data with Reinforcement Learning
 
 ## Description
 
