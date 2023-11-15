@@ -1,4 +1,4 @@
-# BTC Price Modeling: Integrating Blockchain and Market Data with Reinforcement Learning
+# An Integrated Approach to Blockchain Asset Modeling: LSTM for Feature Extraction and Deep Q-Learning for Reinforcement Prediction
 
 ## Description
 

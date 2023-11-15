@@ -53,4 +53,6 @@ def main(start_date, end_date):
     # Clean data
     df = clean_data(df)
 
+    print(df)
+
     return df
