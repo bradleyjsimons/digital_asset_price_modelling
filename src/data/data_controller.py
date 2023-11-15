@@ -15,7 +15,7 @@ from src.data.data_cleaning import clean_data
 from src.features.feature_engineering import (
     add_all_technical_indicators,
     add_blockchain_data,
-    extract_features,
+    extract_lstm_features,
 )
 
 
@@ -33,12 +33,12 @@ def main(start_date, end_date):
     # Fetch initial data
     df = fetch_bitcoin_data(start_date, end_date)
 
-    # add the target variable
-    df["target"] = (df["Close"].shift(-1) > df["Close"]).astype(int)
-
     # Add features
     df = add_all_technical_indicators(df)
     df = add_blockchain_data(df, timespan="3years", start=start_date)
+
+    # add the target variable
+    df["target"] = (df["Close"].shift(-1) > df["Close"]).astype(int)
 
     # Clean data
     df = clean_data(df)
@@ -47,14 +47,10 @@ def main(start_date, end_date):
     X = df.drop("target", axis=1)
     y = df["target"]
 
-    # Split data into train and test sets
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
-
     # Extract features
-    features = extract_features(
-        df, sequence_length=30, X_train=X_train, y_train=y_train
-    )
+    df = extract_lstm_features(df, sequence_length=30, X=X, y=y)
 
-    return features
+    # Clean data
+    df = clean_data(df)
+
+    return df

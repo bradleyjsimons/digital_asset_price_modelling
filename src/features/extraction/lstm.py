@@ -12,8 +12,9 @@ Functions:
 """
 
 import numpy as np
-from keras.models import Sequential
+from keras.models import Sequential, Model
 from keras.layers import Dense, Dropout, LSTM
+from sklearn.model_selection import KFold
 
 
 def create_sequences(df, sequence_length):
@@ -52,17 +53,38 @@ def build_lstm_model():
     return model
 
 
-def train_model(model, X_train, y_train):
+def train_model(model, X, y, n_splits=5):
     """
-    Trains the LSTM model.
+    Trains the LSTM model with K-fold cross-validation and returns the best model.
 
     :param model: The LSTM model to be trained.
-    :param X_train: Training data.
-    :param y_train: Training labels.
-    :return: The trained LSTM model.
+    :param X: Data.
+    :param y: Labels.
+    :param n_splits: Number of folds for cross-validation.
+    :return: The best LSTM model.
     """
-    model.fit(X_train, y_train, epochs=10, batch_size=32)
-    return model
+    kfold = KFold(n_splits=n_splits, shuffle=True, random_state=42)
+
+    best_model = None
+    best_score = float("inf")  # for loss lower is better, for accuracy higher is better
+
+    for train_indices, val_indices in kfold.split(X, y):
+        x_train_fold = X[train_indices]
+        y_train_fold = y[train_indices]
+        x_val_fold = X[val_indices]
+        y_val_fold = y[val_indices]
+
+        model.fit(x_train_fold, y_train_fold, epochs=10, batch_size=32, verbose=1)
+        scores = model.evaluate(x_val_fold, y_val_fold, verbose=0)
+
+        # If the score for this fold is better than all previous folds, save this model as the best model
+        if scores < best_score:
+            best_score = scores
+            best_model = model
+
+        print(f"Score: {model.metrics_names[0]} of {scores}")
+
+    return best_model
 
 
 def extract_features(model, sequences):
@@ -73,4 +95,5 @@ def extract_features(model, sequences):
     :param sequences: The sequences from which to extract features.
     :return: A numpy array with the extracted features.
     """
-    return model.predict(sequences)
+    feature_extractor = Model(inputs=model.inputs, outputs=model.layers[-2].output)
+    return feature_extractor.predict(sequences)

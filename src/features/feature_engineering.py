@@ -36,7 +36,7 @@ from src.features.extraction.lstm import (
     create_sequences,
     build_lstm_model,
     train_model,
-    extract_features as extract_lstm_features,
+    extract_features,
 )
 
 
@@ -118,25 +118,38 @@ def add_all_technical_indicators(data):
     return data
 
 
-def extract_features(df, sequence_length, X_train, y_train):
+def extract_lstm_features(df, sequence_length, X, y):
     """
     Extracts features from the data using an LSTM model.
 
     :param df: A Pandas DataFrame with the processed data.
     :param sequence_length: The length of the sequences to be created from the data.
-    :param X_train: Training data.
-    :param y_train: Training labels.
-    :return: A numpy array with the extracted features.
+    :param X: Data.
+    :param y: Labels.
+    :return: A DataFrame with the extracted features and the target variable.
     """
+    # Save the target variable
+    target = df["target"]
+
     # Ensure df has the same number of columns as the number of features expected by the LSTM layer
-    df = df.iloc[:, :25]
+    df = df.drop(columns=["target"])
 
     sequences = create_sequences(df, sequence_length)
     model = build_lstm_model()
 
-    # Convert X_train to a numpy array and reshape it to be 3D
-    X_train = X_train.to_numpy().reshape((X_train.shape[0], 1, X_train.shape[1]))
+    # Convert X to a numpy array and reshape it to be 3D
+    X = X.to_numpy().reshape((X.shape[0], 1, X.shape[1]))
 
-    trained_model = train_model(model, X_train, y_train)
-    features = extract_lstm_features(trained_model, sequences)
-    return features
+    best_model = train_model(model, X, y)
+    features = extract_features(best_model, sequences)
+
+    # Convert the extracted features to a DataFrame
+    features_df = pd.DataFrame(features)
+
+    # Add the extracted features to the original DataFrame
+    df = pd.concat([df, features_df], axis=1)
+
+    # Add the target variable back to the DataFrame
+    df["target"] = target
+
+    return df

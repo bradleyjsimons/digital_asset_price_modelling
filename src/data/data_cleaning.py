@@ -18,6 +18,9 @@ def clean_data(data):
     :param data: A Pandas DataFrame with the data.
     :return: A cleaned and preprocessed DataFrame.
     """
+    # ensure all column titles are type str
+    data.columns = data.columns.astype(str)
+
     # Handle missing values
     data = data.dropna()
 
