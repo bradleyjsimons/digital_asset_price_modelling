@@ -13,7 +13,7 @@ Functions:
 
 import numpy as np
 from keras.models import Sequential, Model
-from keras.layers import Dense, Dropout, LSTM
+from keras.layers import Dense, Dropout, LSTM, TimeDistributed
 from sklearn.model_selection import KFold
 
 
@@ -33,58 +33,58 @@ def create_sequences(df, sequence_length):
     return np.array(sequences)
 
 
-def build_lstm_model():
+# def build_lstm_model():
+#     """
+#     Builds an LSTM model.
+
+#     :return: The built LSTM model.
+#     """
+#     model = Sequential()
+#     model.add(
+#         LSTM(50, activation="relu", input_shape=(None, 25), return_sequences=True)
+#     )
+#     model.add(Dropout(0.1))
+#     model.add(LSTM(50, activation="relu"))
+#     model.add(Dropout(0.1))
+#     model.add(
+#         Dense(1, activation="linear")
+#     )  # Adjust the output layer depending on your requirement
+#     model.compile(optimizer="adam", loss="mean_squared_error")
+#     return model
+
+
+def build_lstm_model(input_shape):
     """
     Builds an LSTM model.
 
+    :param input_shape: The shape of the input data.
     :return: The built LSTM model.
     """
     model = Sequential()
     model.add(
-        LSTM(50, activation="relu", input_shape=(None, 25), return_sequences=True)
+        LSTM(50, activation="relu", input_shape=input_shape, return_sequences=True)
     )
     model.add(Dropout(0.1))
-    model.add(LSTM(50, activation="relu"))
+    model.add(LSTM(50, activation="relu", return_sequences=True))
     model.add(Dropout(0.1))
     model.add(
-        Dense(1, activation="linear")
-    )  # Adjust the output layer depending on your requirement
+        TimeDistributed(Dense(input_shape[-1]))
+    )  # Output sequence of same length as input
     model.compile(optimizer="adam", loss="mean_squared_error")
     return model
 
 
-def train_model(model, X, y, n_splits=5):
+def train_model(model, X, epochs=10):
     """
-    Trains the LSTM model with K-fold cross-validation and returns the best model.
+    Trains the LSTM model.
 
     :param model: The LSTM model to be trained.
     :param X: Data.
-    :param y: Labels.
-    :param n_splits: Number of folds for cross-validation.
-    :return: The best LSTM model.
+    :param epochs: Number of epochs to train for.
+    :return: The trained LSTM model.
     """
-    kfold = KFold(n_splits=n_splits, shuffle=True, random_state=42)
-
-    best_model = None
-    best_score = float("inf")  # for loss lower is better, for accuracy higher is better
-
-    for train_indices, val_indices in kfold.split(X, y):
-        x_train_fold = X[train_indices]
-        y_train_fold = y[train_indices]
-        x_val_fold = X[val_indices]
-        y_val_fold = y[val_indices]
-
-        model.fit(x_train_fold, y_train_fold, epochs=10, batch_size=32, verbose=1)
-        scores = model.evaluate(x_val_fold, y_val_fold, verbose=0)
-
-        # If the score for this fold is better than all previous folds, save this model as the best model
-        if scores < best_score:
-            best_score = scores
-            best_model = model
-
-        print(f"Score: {model.metrics_names[0]} of {scores}")
-
-    return best_model
+    model.fit(X, X, epochs=epochs, batch_size=32, verbose=1)
+    return model
 
 
 def extract_features(model, sequences):

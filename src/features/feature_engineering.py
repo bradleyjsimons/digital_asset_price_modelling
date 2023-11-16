@@ -118,38 +118,37 @@ def add_all_technical_indicators(data):
     return data
 
 
-def extract_lstm_features(df, sequence_length, X, y):
+def extract_lstm_features(df, sequence_length):
     """
     Extracts features from the data using an LSTM model.
 
     :param df: A Pandas DataFrame with the processed data.
     :param sequence_length: The length of the sequences to be created from the data.
-    :param X: Data.
-    :param y: Labels.
-    :return: A DataFrame with the extracted features and the target variable.
+    :return: A DataFrame with the extracted features.
     """
-    # Save the target variable
-    target = df["target"]
+    # Create sequences from the DataFrame
+    X = create_sequences(df, sequence_length)
 
-    # Ensure df has the same number of columns as the number of features expected by the LSTM layer
-    df = df.drop(columns=["target"])
+    # Build an LSTM model
+    model = build_lstm_model(input_shape=(sequence_length, df.shape[1]))
 
-    sequences = create_sequences(df, sequence_length)
-    model = build_lstm_model()
+    # Train the LSTM model as an autoencoder (reconstructing its input)
+    model = train_model(model, X, epochs=10)
 
-    # Convert X to a numpy array and reshape it to be 3D
-    X = X.to_numpy().reshape((X.shape[0], 1, X.shape[1]))
+    # Extract features from the LSTM model
+    # This could be the outputs of the LSTM layer, for example
+    features = model.predict(X)
 
-    best_model = train_model(model, X, y)
-    features = extract_features(best_model, sequences)
+    # Calculate the mean of the LSTM outputs for each sequence
+    features_mean = features.mean(axis=(1, 2))
 
     # Convert the extracted features to a DataFrame
-    features_df = pd.DataFrame(features)
+    features_df = pd.DataFrame(features_mean, columns=["lstm_feature"])
+
+    # Adjust the index of the features DataFrame to match the original DataFrame
+    features_df.index = df.index[sequence_length - 1 : -1]
 
     # Add the extracted features to the original DataFrame
     df = pd.concat([df, features_df], axis=1)
-
-    # Add the target variable back to the DataFrame
-    df["target"] = target
 
     return df

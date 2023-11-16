@@ -26,6 +26,7 @@ def mock_data(mocker):
             "High": [1, 2, 3],
             "Low": [1, 2, 3],
             "Volume": [1, 2, 3],
+            "target": [1, 2, 3],
         },
         index=pd.date_range(start="1/1/2022", periods=3),
     )
@@ -106,22 +107,20 @@ def test_add_all_technical_indicators(mock_data):
     assert isinstance(result, pd.DataFrame)
 
 
-# def test_extract_features(mocker, mock_data):
-#     """
-#     Test the extract_features function from the feature_engineering module.
-#     """
-#     mocker.patch(
-#         "src.features.extraction.transformer.create_sequences", return_value=mock_data
-#     )
-#     mocker.patch(
-#         "src.features.extraction.transformer.build_transformer_model", return_value=None
-#     )
-#     mocker.patch("src.features.extraction.transformer.train_model", return_value=None)
-#     mocker.patch(
-#         "src.features.extraction.transformer.extract_transformer_features",
-#         return_value=mock_data,
-#     )
-#     result = fe.extract_features(
-#         mock_data, sequence_length=30, X_train=mock_data, y_train=mock_data["Close"]
-#     )
-#     assert isinstance(result, pd.DataFrame)
+def test_extract_lstm_features(mocker, mock_data):
+    """
+    Test the extract_lstm_features function from the feature_engineering module.
+    """
+    mocker.patch(
+        "src.features.feature_engineering.create_sequences", return_value=mock_data
+    )
+    mocker.patch("src.features.feature_engineering.build_lstm_model", return_value=None)
+    mocker.patch("src.features.feature_engineering.train_model", return_value=None)
+    mocker.patch(
+        "src.features.feature_engineering.extract_features",
+        return_value=mock_data,
+    )
+    result = fe.extract_lstm_features(
+        mock_data, sequence_length=30, X=mock_data, y=mock_data["Close"]
+    )
+    assert isinstance(result, pd.DataFrame)

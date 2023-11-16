@@ -29,6 +29,8 @@ def clean_data(data):
 
     # Normalize the data
     scaler = MinMaxScaler()
-    data_scaled = pd.DataFrame(scaler.fit_transform(data), columns=data.columns)
+    data_scaled = pd.DataFrame(
+        scaler.fit_transform(data), columns=data.columns, index=data.index
+    )
 
     return data_scaled

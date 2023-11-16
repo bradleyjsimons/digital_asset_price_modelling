@@ -28,7 +28,7 @@ def mock_functions(mocker):
         "src.data.data_controller.add_blockchain_data",
         return_value=df,
     )
-    mocker.patch("src.data.data_controller.extract_features", return_value=df)
+    mocker.patch("src.data.data_controller.extract_lstm_features", return_value=df)
     mocker.patch(
         "src.data.data_controller.train_test_split",
         return_value=(df, df, pd.Series([1, 2, 3]), pd.Series([1, 2, 3])),

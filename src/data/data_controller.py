@@ -31,28 +31,31 @@ def main(start_date, end_date):
     :return: A numpy array with the extracted features.
     """
     # Fetch initial data
+    print("fetching data...")
     df = fetch_bitcoin_data(start_date, end_date)
 
     # Add features
+    print("adding features...")
     df = add_all_technical_indicators(df)
-    df = add_blockchain_data(df, timespan="3years", start=start_date)
+    df = add_blockchain_data(df, timespan="5years", start=start_date)
+
+    # Clean data
+    print("cleaing data before extraction")
+    df = clean_data(df)
+
+    # Extract features
+    print("extracting additional features using lstm...")
+    df = extract_lstm_features(df, sequence_length=30)
 
     # add the target variable
     df["target"] = (df["Close"].shift(-1) > df["Close"]).astype(int)
-
-    # Clean data
-    df = clean_data(df)
 
     # Separate features and target variable
     X = df.drop("target", axis=1)
     y = df["target"]
 
-    # Extract features
-    df = extract_lstm_features(df, sequence_length=30, X=X, y=y)
-
     # Clean data
+    print("cleaing data for model...")
     df = clean_data(df)
-
-    print(df)
 
     return df
