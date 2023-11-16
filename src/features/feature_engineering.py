@@ -36,8 +36,9 @@ from src.features.extraction.lstm import (
     create_sequences,
     build_lstm_model,
     train_model,
-    extract_features,
 )
+
+from src.data.data_cleaning import clean_data
 
 
 def add_blockchain_data(data, timespan="1year", start=None):
@@ -87,6 +88,9 @@ def add_blockchain_data(data, timespan="1year", start=None):
         data, mempool_size_data, how="left", left_index=True, right_index=True
     )
 
+    # Clean the data
+    data = clean_data(data)
+
     return data
 
 
@@ -112,8 +116,8 @@ def add_all_technical_indicators(data):
     data["obv"] = calculate_obv(data)
     data["cci"] = calculate_cci(data)
 
-    # Drop the NaN values
-    data = data.dropna()
+    # Reclean the data
+    data = clean_data(data)
 
     return data
 

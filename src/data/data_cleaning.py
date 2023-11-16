@@ -14,7 +14,7 @@ import pandas as pd
 
 def clean_data(data):
     """
-    Cleans the data by forward filling missing values, dropping the first row if it still contains missing values,
+    Cleans the data by forward filling missing values, dropping any rows that still contains missing values,
     and checking for duplicates.
 
     :param data: A Pandas DataFrame with the data.
@@ -26,8 +26,8 @@ def clean_data(data):
     # Forward fill missing values
     data.ffill(inplace=True)
 
-    # Drop the first row if it still contains missing values
-    data = data.iloc[1:] if data.iloc[0].isna().any() else data
+    # Drop any rows that still contain missing values
+    data.dropna(inplace=True)
 
     # Check for duplicates
     data.drop_duplicates(inplace=True)

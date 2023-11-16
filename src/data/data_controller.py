@@ -33,8 +33,6 @@ def main(start_date, end_date):
     # Fetch initial data
     print("fetching data...")
     df = fetch_bitcoin_data(start_date, end_date)
-    print(df)
-    quit()
 
     # Add features
     print("adding features...")
