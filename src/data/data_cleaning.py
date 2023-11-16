@@ -9,6 +9,7 @@ These functions use pandas for data manipulation and sklearn.preprocessing for d
 """
 
 from sklearn.preprocessing import MinMaxScaler
+import joblib
 import pandas as pd
 
 
@@ -35,15 +36,17 @@ def clean_data(data):
     return data
 
 
-def normalize_data(data, scalar=None):
+def normalize_data(data, scalar=None, path=None):
     """
     Normalizes the data using MinMaxScaler.
 
     This function uses the MinMaxScaler from sklearn.preprocessing to normalize the data.
     It scales and transforms the data, and then returns a new DataFrame with the same columns and index as the original data.
+    If a path is provided, the scaler is saved to this path.
 
     :param data: A Pandas DataFrame with the data to be normalized.
     :param scalar: An optional MinMaxScaler instance. If not provided, a new MinMaxScaler will be created.
+    :param path: An optional path to save the scaler. If not provided, the scaler will not be saved.
     :return: A new Pandas DataFrame with the normalized data.
     """
     if not scalar:
@@ -52,5 +55,8 @@ def normalize_data(data, scalar=None):
     data_scaled = pd.DataFrame(
         scaler.fit_transform(data), columns=data.columns, index=data.index
     )
+
+    if path:
+        joblib.dump(scaler, path)
 
     return data_scaled

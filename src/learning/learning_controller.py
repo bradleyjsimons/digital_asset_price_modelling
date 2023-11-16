@@ -17,8 +17,6 @@ Constants:
     BATCH_SIZE (int): The size of the batch used when updating the model.
 """
 import os
-from datetime import datetime
-from keras.models import load_model
 
 from src.learning.rl.environment import TradingEnvironment
 from src.learning.rl.models import dqn
@@ -28,7 +26,7 @@ MAX_STEPS = 10
 BATCH_SIZE = 64
 
 
-def train_model(data):
+def train_model(data, model_dir):
     """
     Trains a DQN model using the provided data and saves the trained model.
 
@@ -45,7 +43,7 @@ def train_model(data):
         model (dqn.DQN): The trained DQN model.
     """
     # Drop the target variable for RL
-    data = data.drop(columns=["target"])
+    data.drop(columns=["target"], inplace=True)
 
     # Initialize the trading environment
     print("setting up RL learning environment...")
@@ -82,14 +80,11 @@ def train_model(data):
             if done:
                 break
 
-    # Get the current date and time
-    now = datetime.now()
+    # Define the filename with .h5 extension
+    filename = "dqn_model.h5"
 
-    # Format the date and time as a string
-    timestamp = now.strftime("%Y-%m-%d_%H-%M-%S")
-
-    # Create the path to save the model
-    path = f"src/learning/trained_models/dqn_model_{timestamp}.h5"
+    # Create the full path to save the model
+    path = os.path.join(model_dir, filename)
 
     # Save the model with the timestamp in the filename
     model.save_model(path)
