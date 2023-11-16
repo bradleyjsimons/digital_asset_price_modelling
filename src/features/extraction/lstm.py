@@ -33,26 +33,6 @@ def create_sequences(df, sequence_length):
     return np.array(sequences)
 
 
-# def build_lstm_model():
-#     """
-#     Builds an LSTM model.
-
-#     :return: The built LSTM model.
-#     """
-#     model = Sequential()
-#     model.add(
-#         LSTM(50, activation="relu", input_shape=(None, 25), return_sequences=True)
-#     )
-#     model.add(Dropout(0.1))
-#     model.add(LSTM(50, activation="relu"))
-#     model.add(Dropout(0.1))
-#     model.add(
-#         Dense(1, activation="linear")
-#     )  # Adjust the output layer depending on your requirement
-#     model.compile(optimizer="adam", loss="mean_squared_error")
-#     return model
-
-
 def build_lstm_model(input_shape):
     """
     Builds an LSTM model.
