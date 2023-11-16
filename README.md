@@ -18,17 +18,17 @@ By using this project, you acknowledge and agree to these terms.
 
 This project represents a comprehensive approach to predicting Bitcoin prices, integrating blockchain metrics, market data, and advanced machine learning techniques. The current progress and methodologies include:
 
-Data Retrieval: Gathering Bitcoin OHLCV (Open, High, Low, Close, Volume) data from Yahoo Finance.
-Blockchain Metrics: Incorporating blockchain-specific data such as hash rate, average block size, network difficulty, miner revenue, and mempool size, sourced from blockchain.com's charts API.
-Technical Analysis Indicators: Enhancing the dataset with a variety of technical indicators, including Bollinger Bands, Stochastic Oscillators, MACD, RSI, Simple Moving Average (SMA), Exponential Moving Average (EMA), Average True Range (ATR), MACD Histogram, On-Balance Volume, and Commodity Channel Index (CCI).
-Data Preprocessing: Performing essential data preprocessing, which includes normalization (using MinMaxScaler), forward-filling missing values, and removing duplicates. The scalar used for normalization is stored for potential inverse transformation in later stages.
-Feature Extraction with LSTM: Utilizing an LSTM neural network to extract additional features, adding a new dimension to the dataset.
-Target Variable: Introducing a binary target variable that indicates whether the closing price of Bitcoin goes up or down, facilitating a predictive modeling approach.
-Log Returns Calculation: Calculating and including log returns as part of the feature set immediately after data retrieval from Yahoo Finance.
-Data Cleaning: Systematic data cleaning throughout the process ensures data integrity and usability.
-Dataset Storage: Post-processing, the complete dataset is stored as a CSV file for easy access and reproducibility.
-Deep Q-Network Implementation: Currently, the focus is on implementing a Deep Q-Network (DQN) reinforcement learning algorithm to develop a sophisticated trading strategy based on the processed data. This involves setting up an appropriate trading environment and fine-tuning the model.
-Future Steps: The next phase will involve rigorous backtesting of the model to evaluate its effectiveness and refine its predictive capabilities.
+- **Data Retrieval**: Gathering Bitcoin OHLCV (Open, High, Low, Close, Volume) data from Yahoo Finance.
+- **Blockchain Metrics**: Incorporating blockchain-specific data such as hash rate, average block size, network difficulty, miner revenue, and mempool size, sourced from blockchain.com's charts API.
+- **Technical Analysis Indicators**: Enhancing the dataset with a variety of technical indicators, including Bollinger Bands, Stochastic Oscillators, MACD, RSI, Simple Moving Average (SMA), Exponential Moving Average (EMA), Average True Range (ATR), MACD Histogram, On-Balance Volume, and Commodity Channel Index (CCI).
+- **Data Preprocessing**: Performing essential data preprocessing, which includes normalization (using MinMaxScaler), forward-filling missing values, and removing duplicates. The scalar used for normalization is stored for potential inverse transformation in later stages.
+- **Feature Extraction with LSTM**: Utilizing an LSTM neural network to extract additional features, adding a new dimension to the dataset.
+- **Target Variable**: Introducing a binary target variable that indicates whether the closing price of Bitcoin goes up or down, facilitating a predictive modeling approach.
+- **Log Returns Calculation**: Calculating and including log returns as part of the feature set immediately after data retrieval from Yahoo Finance.
+- **Data Cleaning**: Systematic data cleaning throughout the process ensures data integrity and usability.
+- **Dataset Storage**: Post-processing, the complete dataset is stored as a CSV file for easy access and reproducibility.
+- **Deep Q-Network Implementation**: Currently, the focus is on implementing a Deep Q-Network (DQN) reinforcement learning algorithm to develop a sophisticated trading strategy based on the processed data. This involves setting up an appropriate trading environment and fine-tuning the model.
+- **Future Steps**: The next phase will involve rigorous backtesting of the model to evaluate its effectiveness and refine its predictive capabilities.
 
 This project encapsulates a blend of data science and machine learning techniques aimed at modeling and understanding the complex dynamics of Bitcoin prices, offering insights into the potential of combining traditional financial analysis with cutting-edge AI methodologies.
 
