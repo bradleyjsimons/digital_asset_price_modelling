@@ -80,7 +80,3 @@ This project is licensed under the MIT License - see the LICENSE.md file for det
 ## Contact
 
 bradleyjsimons@velveteen.ai
-
-## Disclaimer
-
-This project is for informational and educational purposes only. It is not intended to provide financial advice. The use of information from this project is at your own risk. The authors and contributors of this project are not responsible for any financial losses or other damages that may result from using the content or code. Always conduct your own research and consult with financial advisors before making any investment decisions.
