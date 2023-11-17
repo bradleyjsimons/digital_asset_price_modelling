@@ -32,7 +32,7 @@ class DQN:
         self.action_size = action_size
         self.memory = deque(maxlen=2000)
         self.gamma = 0.95  # discount rate
-        self.epsilon = 1.0  # exploration rate
+        self.epsilon = 0.9  # exploration rate
         self.epsilon_min = 0.01
         self.epsilon_decay = 0.995
         self.learning_rate = 0.001
@@ -84,6 +84,7 @@ class DQN:
         """
         if np.random.rand() <= self.epsilon:
             return random.randrange(self.action_size)
+        state = np.expand_dims(state, axis=0)  # Add an extra dimension for batch size
         act_values = self.model.predict(state)
         return np.argmax(act_values[0])  # returns action
 
@@ -96,6 +97,10 @@ class DQN:
         """
         minibatch = random.sample(self.memory, batch_size)
 
+        # Decay epsilon after each replay
+        if self.epsilon > self.epsilon_min:
+            self.epsilon *= self.epsilon_decay
+
         for state, action, reward, next_state, done in minibatch:
             target = reward
             if not done:
@@ -106,7 +111,7 @@ class DQN:
                 )
             # Reshape the state
             state = np.reshape(state, [1, self.state_size])
-            target_f = self.model.predict(state)
+            target_f = self.model.predict(state, verbose=0)
             target_f[0][action] = target
 
             self.model.fit(state, target_f, epochs=1, verbose=0)

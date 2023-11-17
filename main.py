@@ -63,8 +63,6 @@ def main():
             os.path.join(model_dir, "dqn_model.h5")
         )
 
-    print(model)
-
     # Evaluate the model
     evaluation_controller.evaluate_model(
         model,

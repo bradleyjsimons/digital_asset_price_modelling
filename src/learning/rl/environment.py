@@ -51,46 +51,60 @@ class TradingEnvironment:
             reward: The reward for taking the action.
             done: Whether the episode is done.
         """
-        # Store the 'Close' price at the current step
-        current_close = self.data.iloc[self.current_step]["Close"]
+        # Map the action from integer to string
+        action_map = {0: "hold", 1: "buy", 2: "sell"}
+        action = action_map.get(action, "hold")
+
+        # if action is taken, then apply a trade fee
+        if action != "hold":
+            fee = self.calculate_fee(self.balance)
+            self.balance -= fee
 
         # Update position based on the action and update balance
         if action == "buy" and self.position == 0:
             self.position = 1
-            self.balance -= self.balance * self.calculate_fee(self.balance)
         elif action == "sell" and self.position == 1:
             self.position = 0
-            self.balance += self.balance * self.calculate_fee(self.balance)
+
+        # Calculate reward after position change
+        # since the reward uses the log return of this step and
+        # the next step
+        self.reward = np.exp(self.calculate_reward())
+
+        # Update balance based on the reward
+        if self.position == 1:
+            self.balance *= self.reward
 
         # Update current step
         self.current_step += 1
         self.current_step = min(self.current_step, len(self.data) - 1)
 
-        # Calculate reward
-        self.reward = self.calculate_reward()
-
         # Check if the episode is done
         self.done = self.current_step >= len(self.data) - 1
+
+        # print the current state
+        print(
+            f"Action: {action}, Position: {self.position}, Balance: {self.balance}, Reward: {self.reward}, Done: {self.done}, Step Return: {np.exp(self.data.iloc[self.current_step, :]['log_return'])}"
+        )
 
         return self._get_state(), self.reward, self.done
 
     def calculate_reward(self):
         """
-        Calculates the reward based on the current and next close prices.
-
-        Args:
-            current_close (float): The current close price.
-            next_close (float): The next close price.
+        Calculates the reward based on the pre-calculated log returns.
 
         Returns:
             reward (float): The calculated reward.
         """
         if self.position == 1:
-            # If holding a position, reward is the log return
-            return np.log(self.balance / self.initial_balance)
+            # If holding a position, reward is the log return of the next price relative to the current price
+            reward = self.data.iloc[self.current_step, :]["log_return"]
+
         else:
             # If not holding a position, reward is 0
-            return 0
+            reward = 0
+
+        return reward
 
     def _get_state(self):
         """

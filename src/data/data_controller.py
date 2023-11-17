@@ -44,6 +44,9 @@ def main(start_date, end_date, model_dir):
     df = add_all_technical_indicators(df)
     df = add_blockchain_data(df, timespan="5years", start=start_date)
 
+    # Temporarily remove the log returns column
+    log_returns = df.pop("log_return")
+
     # Normalize the data before extraction
     print("normalizing data...")
     df, scaler = normalize_data(df, path=f"{model_dir}/scaler.pkl")
@@ -51,6 +54,9 @@ def main(start_date, end_date, model_dir):
     # Extract features
     print("extracting additional features using lstm...")
     df = extract_lstm_features(df, sequence_length=30)
+
+    # Add the log returns column back to the DataFrame
+    df["log_return"] = log_returns
 
     # add the target variable
     df["target"] = (df["Close"].shift(-1) > df["Close"]).astype(int)

@@ -23,8 +23,8 @@ from src.learning.rl.models import dqn
 from keras.models import load_model
 
 
-NUM_EPISODES = 20
-MAX_STEPS = 20
+NUM_EPISODES = 100
+MAX_STEPS = 100
 BATCH_SIZE = 64
 
 
@@ -62,11 +62,11 @@ def train_model(data, model_dir):
     # Run the simulation
     print("running simulation...")
     for episode in range(NUM_EPISODES):
-        print(f"Starting episode {episode+1} of {NUM_EPISODES}")
+        # print(f"Starting episode {episode+1} of {NUM_EPISODES}")
         state = env.reset()
 
         for step in range(MAX_STEPS):
-            print(f"\tStep {step+1} of {MAX_STEPS}")
+            # print(f"\tStep {step+1} of {MAX_STEPS}")
             action = model.act(state)
             next_state, reward, done = env.step(action)
 
