@@ -48,7 +48,7 @@ class TradingEnvironment:
             done: Whether the episode is done.
         """
         # Store the 'Close' price at the current step
-        current_close = self.data.loc[self.current_step, "Close"]
+        current_close = self.data.iloc[self.current_step]["Close"]
 
         # Update position based on the action
         if action == "buy" and self.position == 0:

@@ -12,7 +12,7 @@ import pandas as pd
 import numpy as np
 
 
-def backtest_model(model, data):
+def backtest_model(model, data, scaler):
     """
     Backtests a trained model using the provided data.
 
@@ -30,6 +30,9 @@ def backtest_model(model, data):
 
     # Calculate the predicted output
     predicted_output = model.predict(data_without_target)
+
+    # Inverse transform the predicted output
+    predicted_output = scaler.inverse_transform(predicted_output)
 
     # Convert the predicted output to a DataFrame
     predicted_output_df = pd.DataFrame(

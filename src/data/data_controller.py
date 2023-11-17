@@ -1,11 +1,14 @@
 """
-This module provides a main function to control the data fetching, cleaning, and feature engineering process.
+This module provides functions to control the data fetching, cleaning, feature engineering process, and loading of data and scalers.
 
-Function:
+Functions:
 - main: Fetches Bitcoin data, adds blockchain data, adds technical indicators, normalizes the data, extracts features using an LSTM model, and stores the resulting DataFrame in a CSV file.
+- load_data: Loads a DataFrame from a CSV file.
+- load_scaler: Loads a scaler object from a file.
 
 This module uses functions from the src.api, src.data, and src.features modules. The resulting DataFrame is stored in a CSV file in the specified model directory.
 """
+
 
 from src.api.yfinance import fetch_bitcoin_data
 from src.data.data_cleaning import clean_data, normalize_data
@@ -14,6 +17,9 @@ from src.features.feature_engineering import (
     add_blockchain_data,
     extract_lstm_features,
 )
+
+import pandas as pd
+import joblib
 
 
 def main(start_date, end_date, model_dir):
@@ -61,3 +67,26 @@ def main(start_date, end_date, model_dir):
     df.to_csv(f"{model_dir}/data.csv")
 
     return df
+
+
+def load_data(data_path):
+    """
+    Load a DataFrame from a CSV file.
+
+    :param data_path: The path to the CSV file.
+    :return: A DataFrame containing the data.
+    """
+    data = pd.read_csv(data_path, index_col=0)
+
+    return data
+
+
+def load_scaler(scaler_path):
+    """
+    Load a scaler object from a file.
+
+    :param scaler_path: The path to the file containing the scaler object.
+    :return: The loaded scaler object.
+    """
+    scaler = joblib.load(scaler_path)
+    return scaler

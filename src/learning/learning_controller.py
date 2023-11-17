@@ -1,15 +1,15 @@
 """
 This module contains the functionality for training and loading a Deep Q-Network (DQN) model for a trading environment.
 
-The main functions in this module are `train_model` and `load_existing_model`. `train_model` takes in market data, initializes a trading environment with this data, 
+The main functions in this module are `train_model` and `load_trained_model`. `train_model` takes in market data, initializes a trading environment with this data, 
 loads a DQN model, and runs a simulation to train the model. The simulation runs for a specified number of episodes, 
 and in each episode, it runs a loop for a specified number of steps. In each step, it predicts an action based on the current state, 
 takes that action in the environment to get the next state and reward, and updates the model based on these results. 
-After the training, the model is saved with a timestamp in its filename. `load_existing_model` loads a DQN model from a file.
+After the training, the model is saved with a timestamp in its filename. `load_trained_model` loads a DQN model from a file.
 
 Functions:
     train_model(data: pandas.DataFrame) -> dqn.DQN: Trains a DQN model using the provided data, saves the trained model, and returns the model.
-    load_existing_model(model_path: str) -> dqn.DQN: Loads a DQN model from a file and returns the model.
+    load_trained_model(model_path: str) -> keras.Model: Loads a DQN model from a file and returns the model.
 
 Constants:
     NUM_EPISODES (int): The number of episodes to run in the simulation.
@@ -20,6 +20,8 @@ import os
 
 from src.learning.rl.environment import TradingEnvironment
 from src.learning.rl.models import dqn
+from keras.models import load_model
+
 
 NUM_EPISODES = 10
 MAX_STEPS = 10
@@ -92,3 +94,14 @@ def train_model(data, model_dir):
     print("model trained and saved")
 
     return path
+
+
+def load_trained_model(model_path):
+    """
+    Load a DQN model from a file.
+
+    :param model_path: The path to the file containing the DQN model.
+    :return: The loaded DQN model.
+    """
+    model = load_model(model_path)
+    return model
