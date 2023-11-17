@@ -51,7 +51,6 @@ def backtest_model(model, data, scaler):
 
     # Choose the action with the highest probability
     predicted_actions = predicted_output_df.idxmax(axis=1)
-    print(predicted_actions)
 
     # Create a 'position' column based on the predicted actions
     data["position"] = predicted_actions.replace({"buy": 1, "sell": 0, "hold": np.nan})

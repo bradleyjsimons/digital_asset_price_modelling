@@ -16,21 +16,27 @@ By using this project, you acknowledge and agree to these terms.
 
 ## Description
 
-This project represents a comprehensive approach to predicting Bitcoin prices, integrating blockchain metrics, market data, and advanced machine learning techniques. The current progress and methodologies include:
+This project represents a sophisticated approach to predicting Bitcoin prices, integrating blockchain metrics, market data, and advanced machine learning techniques. Key developments and methodologies include:
 
-- **Data Retrieval**: Gathering Bitcoin OHLCV (Open, High, Low, Close, Volume) data from Yahoo Finance.
-- **Log Returns Calculation**: Calculating and including log returns as part of the feature set immediately after data retrieval from Yahoo Finance.
-- **Blockchain Metrics**: Incorporating blockchain-specific data such as hash rate, average block size, network difficulty, miner revenue, and mempool size, sourced from blockchain.com's charts API.
-- **Technical Analysis Indicators**: Enhancing the dataset with a variety of technical indicators, including Bollinger Bands, Stochastic Oscillators, MACD, RSI, Simple Moving Average (SMA), Exponential Moving Average (EMA), Average True Range (ATR), MACD Histogram, On-Balance Volume, and Commodity Channel Index (CCI).
-- **Data Preprocessing**: Performing essential data preprocessing, which includes normalization (using MinMaxScaler), forward-filling missing values, and removing duplicates. The scalar used for normalization is stored for potential inverse transformation in later stages.
-- **Feature Extraction with LSTM**: Utilizing an LSTM neural network to extract additional features, adding a new dimension to the dataset.
-- **Target Variable**: Introducing a binary target variable that indicates whether the closing price of Bitcoin goes up or down, facilitating a predictive modeling approach.
-- **Data Cleaning**: Systematic data cleaning throughout the process ensures data integrity and usability.
-- **Dataset Storage**: Post-processing, the complete dataset is stored as a CSV file for easy access and reproducibility.
-- **Deep Q-Network Implementation**: Currently, the focus is on implementing a Deep Q-Network (DQN) reinforcement learning algorithm to develop a sophisticated trading strategy based on the processed data. This involves setting up an appropriate trading environment and fine-tuning the model.
-- **Future Steps**: The next phase will involve rigorous backtesting of the model to evaluate its effectiveness and refine its predictive capabilities.
+- **Data Retrieval and Log Returns Calculation**: Gathering Bitcoin OHLCV (Open, High, Low, Close, Volume) data from Yahoo Finance and calculating log returns.
+- **Blockchain Metrics**: Adding blockchain-specific data such as hash rate, average block size, network difficulty, miner revenue, and mempool size, sourced from blockchain.com's charts API.
+- **Technical Analysis Indicators**: Incorporating a variety of technical indicators like Bollinger Bands, Stochastic Oscillators, MACD, RSI, SMA, EMA, ATR, MACD Histogram, On-Balance Volume, and CCI.
+- **Data Preprocessing**: Implementing essential preprocessing steps, including normalization using MinMaxScaler, forward-filling missing values, and removing duplicates.
+- **Feature Extraction with LSTM**: Using an LSTM neural network to derive additional features, contributing a new dimension to the dataset.
+- **Target Variable Addition**: Introducing a binary target variable to indicate whether the closing price of Bitcoin goes up or down.
+- **Dataset Storage**: Storing the processed dataset as a CSV file for accessibility and reproducibility.
+- **Reinforcement Learning Environment Enhancement**:
+  - **Fee Calculation**: Integrating a fee calculation based on the Kraken API fee structure into the step function of the reinforcement learning environment.
+  - **Value Function and Environment Update**: Incorporating a balance metric and optimizing for the highest return relative to the initial balance.
+- **Deep Q-Network (DQN) Model Update**:
+  - **Model Architecture**: Updating the DQN model to include two layers of 64 neurons each, followed by a third layer of 32 neurons, all using ReLU activation, and a final dense layer with linear activation.
+  - **Optimization and Loss**: Employing the Adam optimizer with mean squared error as the loss function.
+- **Future Steps**:
+  - **Model Testing and Backtesting**: Continuing to test the code, perform backtesting, and refine the model based on results.
+  - **Performance Analysis and Visualization**: Planning to provide charts, visualizations, and analyze metrics like the Sharpe ratio and maximum drawdown to evaluate the model's effectiveness.
+  - **Ongoing Development**: Further code testing and enhancements to improve predictive accuracy and reliability.
 
-This project encapsulates a blend of data science and machine learning techniques aimed at modeling and understanding the complex dynamics of Bitcoin prices, offering insights into the potential of combining traditional financial analysis with cutting-edge AI methodologies.
+This project encapsulates a blend of data science, machine learning, and financial analysis techniques, aimed at understanding the complex dynamics of Bitcoin prices. It offers insights into the potential of combining traditional financial analysis with cutting-edge AI methodologies.
 
 ## Installation
 

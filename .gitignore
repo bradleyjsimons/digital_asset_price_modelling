@@ -17,3 +17,6 @@ __pycache__/
 
 # macOS files
 .DS_Store
+
+# trained model files
+src/models/*
