@@ -34,7 +34,7 @@ def main():
     start_date = "2018-01-01"
     end_date = "2023-01-01"
 
-    should_train = False  # should train new model or not
+    should_train = True  # should train new model or not
 
     model_dir = "src/models/"
 
@@ -43,7 +43,7 @@ def main():
         model_dir = folder_manager.create_model_directory()
 
         # Fetch and prep the data
-        data = data_controller.main(start_date, end_date, model_dir)
+        data, scaler = data_controller.main(start_date, end_date, model_dir)
 
         # Train and store model
         model = learning_controller.train_model(data, model_dir)
@@ -62,6 +62,8 @@ def main():
         model = learning_controller.load_trained_model(
             os.path.join(model_dir, "dqn_model.h5")
         )
+
+    print(model)
 
     # Evaluate the model
     evaluation_controller.evaluate_model(

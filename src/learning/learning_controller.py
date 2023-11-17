@@ -23,8 +23,8 @@ from src.learning.rl.models import dqn
 from keras.models import load_model
 
 
-NUM_EPISODES = 10
-MAX_STEPS = 10
+NUM_EPISODES = 20
+MAX_STEPS = 20
 BATCH_SIZE = 64
 
 
@@ -45,11 +45,11 @@ def train_model(data, model_dir):
         model (dqn.DQN): The trained DQN model.
     """
     # Drop the target variable for RL
-    data.drop(columns=["target"], inplace=True)
+    training_data = data.drop(columns=["target"])
 
     # Initialize the trading environment
     print("setting up RL learning environment...")
-    env = TradingEnvironment(data)
+    env = TradingEnvironment(training_data)
 
     # Define the state size and action size
     state_size = len(env._get_state())
@@ -93,7 +93,8 @@ def train_model(data, model_dir):
 
     print("model trained and saved")
 
-    return path
+    # return the trained model only
+    return model.model
 
 
 def load_trained_model(model_path):

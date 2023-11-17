@@ -46,7 +46,7 @@ def main(start_date, end_date, model_dir):
 
     # Normalize the data before extraction
     print("normalizing data...")
-    df = normalize_data(df, path=f"{model_dir}/scaler.pkl")
+    df, scaler = normalize_data(df, path=f"{model_dir}/scaler.pkl")
 
     # Extract features
     print("extracting additional features using lstm...")
@@ -55,10 +55,6 @@ def main(start_date, end_date, model_dir):
     # add the target variable
     df["target"] = (df["Close"].shift(-1) > df["Close"]).astype(int)
 
-    # Separate features and target variable
-    X = df.drop("target", axis=1)
-    y = df["target"]
-
     # Clean data before modelling
     print("cleaning data for model...")
     df = clean_data(df)
@@ -66,7 +62,7 @@ def main(start_date, end_date, model_dir):
     # store the data in the model directory
     df.to_csv(f"{model_dir}/data.csv")
 
-    return df
+    return df, scaler
 
 
 def load_data(data_path):
@@ -77,6 +73,12 @@ def load_data(data_path):
     :return: A DataFrame containing the data.
     """
     data = pd.read_csv(data_path, index_col=0)
+
+    # convert the index to datetime
+    data.index = pd.to_datetime(data.index)
+
+    # set the frequency of the index
+    data.index = pd.date_range(start=data.index[0], periods=len(data), freq="D")
 
     return data
 

@@ -25,47 +25,51 @@ def backtest_model(model, data, scaler):
     Returns:
         returns (pandas.DataFrame): The DataFrame with the backtest results.
     """
-    # Remove the target column from the data before making predictions
+
+    # # Remove the target column from the data before making predictions
     data_without_target = data.drop(columns=["target"])
 
     # Calculate the predicted output
     predicted_output = model.predict(data_without_target)
 
-    # Inverse transform the predicted output
-    predicted_output = scaler.inverse_transform(predicted_output)
+    # Select the columns to inverse transform
+    cols_to_inverse_transform = [
+        col for col in data.columns if col not in ["lstm_feature", "target"]
+    ]
+
+    # Inverse transform the selected columns
+    data[cols_to_inverse_transform] = scaler.inverse_transform(
+        data[cols_to_inverse_transform]
+    )
 
     # Convert the predicted output to a DataFrame
     predicted_output_df = pd.DataFrame(
         predicted_output,
         columns=["buy", "sell", "hold"],
-        index=data_without_target.index,
+        index=data.index,
     )
 
     # Choose the action with the highest probability
     predicted_actions = predicted_output_df.idxmax(axis=1)
+    print(predicted_actions)
 
     # Create a 'position' column based on the predicted actions
-    data["position"] = (
-        predicted_actions.replace({"buy": 1, "sell": 0, "hold": np.nan})
-        .ffill()
-        .fillna(0)
-    )
+    data["position"] = predicted_actions.replace({"buy": 1, "sell": 0, "hold": np.nan})
 
-    # fill zero values with a small number
-    data.loc[data["Close"] == 0, "Close"] = 1e-9
+    # Get the strategy return series
+    data["strategy_return"] = data["position"].shift() * data["log_return"]
 
-    # Calculate the daily returns
-    data["daily_return"] = data["Close"].pct_change()
-    print(data["daily_return"].describe())
+    # Sum the log returns
+    total_log_return = data["strategy_return"].sum()
 
-    # Calculate the strategy returns
-    data["strategy_return"] = data["position"].shift() * data["daily_return"]
+    # Convert the total log return to a regular return
+    total_regular_return = np.exp(total_log_return) - 1
 
-    data.dropna(inplace=True)
-    print(data["daily_return"].describe())
-    print(data["position"].describe())
-    print(data["strategy_return"].describe())
-    total_strategy_return = data["strategy_return"].sum()
-    print(total_strategy_return)
+    # Calculate the log return of a simple buy-and-hold strategy
+    benchmark_log_return = data["log_return"].sum()
 
-    return data
+    # Convert the benchmark log return to a regular return
+    benchmark_regular_return = np.exp(benchmark_log_return) - 1
+
+    print("Strategy Return: ", total_regular_return)
+    print("Benchmark Return: ", benchmark_regular_return)

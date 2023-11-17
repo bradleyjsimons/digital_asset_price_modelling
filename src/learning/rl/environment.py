@@ -61,18 +61,31 @@ class TradingEnvironment:
         self.current_step = min(self.current_step, len(self.data) - 1)
 
         # Calculate reward
-        if self.position == 1:
-            # If holding a position, reward is the change in price
-            next_close = self.data.loc[self.current_step, "Close"]
-            self.reward = next_close - current_close
-        else:
-            # If not holding a position, reward is 0
-            self.reward = 0
+        next_close = self.data.iloc[self.current_step]["Close"]
+        self.reward = self.calculate_reward(current_close, next_close)
 
         # Check if the episode is done
         self.done = self.current_step >= len(self.data) - 1
 
         return self._get_state(), self.reward, self.done
+
+    def calculate_reward(self, current_close, next_close):
+        """
+        Calculates the reward based on the current and next close prices.
+
+        Args:
+            current_close (float): The current close price.
+            next_close (float): The next close price.
+
+        Returns:
+            reward (float): The calculated reward.
+        """
+        if self.position == 1:
+            # If holding a position, reward is the log return
+            return np.log(next_close / current_close)
+        else:
+            # If not holding a position, reward is 0
+            return 0
 
     def _get_state(self):
         """

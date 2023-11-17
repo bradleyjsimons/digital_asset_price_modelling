@@ -59,4 +59,4 @@ def normalize_data(data, scalar=None, path=None):
     if path:
         joblib.dump(scaler, path)
 
-    return data_scaled
+    return data_scaled, scaler

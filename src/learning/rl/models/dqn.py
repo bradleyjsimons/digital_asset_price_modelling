@@ -49,13 +49,14 @@ class DQN:
         """
         model = tf.keras.models.Sequential()
         model.add(
-            tf.keras.layers.Dense(24, input_dim=self.state_size, activation="relu")
+            tf.keras.layers.Dense(64, input_dim=self.state_size, activation="relu")
         )
-        model.add(tf.keras.layers.Dense(24, activation="relu"))
+        model.add(tf.keras.layers.Dense(64, activation="relu"))
+        model.add(tf.keras.layers.Dense(32, activation="relu"))
         model.add(tf.keras.layers.Dense(self.action_size, activation="linear"))
         model.compile(
             loss="mse",
-            optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=self.learning_rate),
+            optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate),
         )
         return model
 
