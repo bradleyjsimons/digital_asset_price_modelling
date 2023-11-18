@@ -1,4 +1,4 @@
-# An Integrated Approach to Blockchain Asset Modeling: LSTM for Feature Extraction and Deep Q-Learning for Reinforcement Prediction
+# Utilizing Deep Q Network Agents for Reinforcement Learning in Blockchain Asset Forecasting
 
 ## Disclaimer
 
