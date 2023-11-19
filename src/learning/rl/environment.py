@@ -25,6 +25,7 @@ class TradingEnvironment:
         self.done = False
         self.current_step = 0
         self.position = 0
+        self.total_volume = 0
 
     def reset(self):
         """
@@ -37,6 +38,7 @@ class TradingEnvironment:
         self.reward = 0
         self.done = False
         self.current_step = 0
+        self.position = 0
         return self._get_state()
 
     def step(self, action):
@@ -51,29 +53,28 @@ class TradingEnvironment:
             reward: The reward for taking the action.
             done: Whether the episode is done.
         """
+        # Calculate reward before position change
+        # Update balance based on the reward
+        if self.position == 1:
+            self.reward = np.exp(self.calculate_reward())
+            self.balance *= self.reward
+        else:
+            self.reward = 0
+
         # Map the action from integer to string
         action_map = {0: "hold", 1: "buy", 2: "sell"}
         action = action_map.get(action, "hold")
 
         # if action is taken, then apply a trade fee
         if action != "hold":
-            fee = self.calculate_fee(self.balance)
-            self.balance -= fee
+            self.total_volume += self.balance  # Update total volume
+            self.balance -= self.calculate_fee(self.balance)
 
         # Update position based on the action and update balance
         if action == "buy" and self.position == 0:
             self.position = 1
         elif action == "sell" and self.position == 1:
             self.position = 0
-
-        # Calculate reward after position change
-        # since the reward uses the log return of this step and
-        # the next step
-        self.reward = np.exp(self.calculate_reward())
-
-        # Update balance based on the reward
-        if self.position == 1:
-            self.balance *= self.reward
 
         # Update current step
         self.current_step += 1
@@ -96,15 +97,7 @@ class TradingEnvironment:
         Returns:
             reward (float): The calculated reward.
         """
-        if self.position == 1:
-            # If holding a position, reward is the log return of the next price relative to the current price
-            reward = self.data.iloc[self.current_step, :]["log_return"]
-
-        else:
-            # If not holding a position, reward is 0
-            reward = 0
-
-        return reward
+        return self.data.iloc[self.current_step, :]["log_return"]
 
     def _get_state(self):
         """
@@ -144,13 +137,10 @@ class TradingEnvironment:
             (250001, 0.0020),
             (100001, 0.0022),
             (50001, 0.0024),
-            (0, 0.0026),
+            (-np.inf, 0.0026),
         ]
 
         # Find the correct fee tier
         for volume, fee in fee_tiers:
-            if trade_size >= volume:
+            if self.total_volume >= volume:  # Use total_volume instead of trade_size
                 return trade_size * fee
-
-        # Default fee if no tier is found (should not happen)
-        return trade_size * 0.0026

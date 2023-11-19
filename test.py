@@ -7,7 +7,7 @@ if len(sys.argv) == 2 and sys.argv[1] == "all":
 else:
     pytest.main(
         [
-            "tests/data/test_data_controller.py",
+            "tests/learning/rl/test_environment.py",
             "--cov=src",
             "--cov-report",
             "html",
