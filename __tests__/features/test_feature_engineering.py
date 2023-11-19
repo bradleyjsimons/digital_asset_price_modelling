@@ -10,6 +10,10 @@ Functions:
 """
 
 import pandas as pd
+import numpy as np
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, LSTM, TimeDistributed
+
 import pytest
 from src.features import feature_engineering as fe
 
@@ -21,14 +25,14 @@ def mock_data(mocker):
     """
     df = pd.DataFrame(
         {
-            "Close": [1, 2, 3],
-            "Open": [1, 2, 3],
-            "High": [1, 2, 3],
-            "Low": [1, 2, 3],
-            "Volume": [1, 2, 3],
-            "target": [1, 2, 3],
+            "Close": np.random.rand(100),
+            "Open": np.random.rand(100),
+            "High": np.random.rand(100),
+            "Low": np.random.rand(100),
+            "Volume": np.random.rand(100),
+            "target": np.random.rand(100),
         },
-        index=pd.date_range(start="1/1/2022", periods=3),
+        index=pd.date_range(start="1/1/2022", periods=100),
     )
 
     hash_rate_df = pd.DataFrame(
@@ -124,3 +128,42 @@ def test_extract_lstm_features(mocker, mock_data):
         mock_data, sequence_length=30, X=mock_data, y=mock_data["Close"]
     )
     assert isinstance(result, pd.DataFrame)
+
+
+def test_extract_lstm_features(mocker, mock_data):
+    """
+    Test the extract_lstm_features function from the feature_engineering module.
+    """
+    # Mock the create_sequences function to return a 3D array
+    mocker.patch(
+        "src.features.feature_engineering.create_sequences",
+        return_value=np.random.rand(90, 10, 25),
+    )
+
+    # Mock the build_lstm_model function to return a Sequential model
+    mock_model = Sequential()
+    mock_model.add(
+        LSTM(50, activation="relu", input_shape=(10, 25), return_sequences=True)
+    )
+    mock_model.add(Dropout(0.1))
+    mock_model.add(LSTM(50, activation="relu", return_sequences=True))
+    mock_model.add(Dropout(0.1))
+    mock_model.add(TimeDistributed(Dense(25)))
+    mocker.patch(
+        "src.features.feature_engineering.build_lstm_model",
+        return_value=mock_model,
+    )
+
+    # Mock the train_model function to return the same model
+    mocker.patch(
+        "src.features.feature_engineering.train_model",
+        return_value=mock_model,
+    )
+
+    # Mock the predict method of the model to return a 3D array
+    mock_model.predict = mocker.Mock(return_value=np.random.rand(90, 10, 50))
+
+    result = fe.extract_lstm_features(mock_data, sequence_length=10)
+
+    assert isinstance(result, pd.DataFrame)
+    assert "lstm_feature" in result.columns  # Check that the LSTM feature was added

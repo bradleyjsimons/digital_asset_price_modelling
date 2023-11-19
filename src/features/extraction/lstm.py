@@ -14,7 +14,6 @@ Functions:
 import numpy as np
 from keras.models import Sequential, Model
 from keras.layers import Dense, Dropout, LSTM, TimeDistributed
-from sklearn.model_selection import KFold
 
 
 def create_sequences(df, sequence_length):
