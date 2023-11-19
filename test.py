@@ -7,7 +7,7 @@ if len(sys.argv) == 2 and sys.argv[1] == "all":
 else:
     pytest.main(
         [
-            "tests/unit/services/kraken/spot/test_kraken_spot_orders_service.py",
+            "__tests__/data/test_data_controller.py",
             "--cov=src",
             "--cov-report",
             "html",
