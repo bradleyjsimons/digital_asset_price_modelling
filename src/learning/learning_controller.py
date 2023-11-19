@@ -53,7 +53,7 @@ def train_model(data, model_dir):
 
     # Define the state size and action size
     state_size = len(env._get_state())
-    action_size = 3  # For example, if the actions are "buy", "sell", and "hold"
+    action_size = 3  # actions are "buy", "sell", and "hold"
 
     # Load the DQN model
     print("loading DQN model...")
@@ -90,7 +90,6 @@ def train_model(data, model_dir):
 
     # Save the model with the timestamp in the filename
     model.save_model(path)
-
     print("model trained and saved")
 
     # return the trained model only
