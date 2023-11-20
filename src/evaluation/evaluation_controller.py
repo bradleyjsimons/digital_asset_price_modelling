@@ -7,9 +7,9 @@ backtests the model, calculates various performance metrics, and creates visuali
 Functions:
     evaluate_model(model: keras.Model, scaler: Scaler, data: pandas.DataFrame): Evaluates the model using the provided data.
 """
-from keras.models import load_model
 
 from src.evaluation import backtesting
+from src.evaluation import performance_metrics
 
 # from src.learning import metrics
 # from src.learning import visualizations
@@ -28,11 +28,11 @@ def evaluate_model(model, data, scaler):
     """
 
     # Backtest the model
-    total_profit = backtesting.backtest_model(model, data, scaler)
+    backtest_df = backtesting.calculate_backtest_returns(model, data, scaler)
 
-    # # Calculate performance metrics
-    # sharpe_ratio = metrics.calculate_sharpe_ratio(total_profit)
-    # max_drawdown = metrics.calculate_max_drawdown(total_profit)
+    # Calculate performance metrics
+    metrics = performance_metrics.calculate_performance_metrics(backtest_df)
+    print(metrics)
 
     # # Create visualizations
     # visualizations.plot_cumulative_returns(tot

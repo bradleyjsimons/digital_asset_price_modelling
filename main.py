@@ -34,7 +34,7 @@ def main():
     start_date = "2018-01-01"
     end_date = "2023-01-01"
 
-    should_train = True  # should train new model or not
+    should_train = False  # should train new model or not
 
     model_dir = "src/models/"
 
@@ -49,7 +49,7 @@ def main():
         model = learning_controller.train_model(data, model_dir)
 
     else:
-        existing_model_folder_name = "20231116"
+        existing_model_folder_name = "20231120"
         model_dir = os.path.join(model_dir, existing_model_folder_name)
 
         # load the data

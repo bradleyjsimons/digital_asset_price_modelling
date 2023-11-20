@@ -23,8 +23,8 @@ from src.learning.rl.models import dqn
 from keras.models import load_model
 
 
-NUM_EPISODES = 100
-MAX_STEPS = 100
+NUM_EPISODES = 10
+MAX_STEPS = 10
 BATCH_SIZE = 64
 
 

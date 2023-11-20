@@ -1,29 +1,32 @@
 """
 This module contains the functionality for backtesting a trained model.
 
-The main function in this module is `backtest_model`, which takes in a trained model and market data, 
+The main function in this module is `calculate_backtest_returns`, which takes in a trained model and market data, 
 calculates the target and predicted output, and calculates the return using a vectorized approach.
 
 Functions:
-    backtest_model(model: dqn.DQN, data: pandas.DataFrame) -> pandas.Series: Backtests the model using the provided data and returns the returns series.
+    calculate_backtest_returns(model: dqn.DQN, data: pandas.DataFrame, scaler: sklearn.preprocessing.StandardScaler) -> pandas.DataFrame: 
+        Calculates the strategy and benchmark returns at each step and their cumulative values, and returns a DataFrame with these series.
 """
 
 import pandas as pd
 import numpy as np
 
 
-def backtest_model(model, data, scaler):
+def calculate_backtest_returns(model, data, scaler):
     """
-    Backtests a trained model using the provided data.
+    Calculates the strategy and benchmark returns at each step and their cumulative values.
 
-    The function calculates the target and predicted output, and calculates the return using a vectorized approach.
+    The function takes in a trained model and market data, calculates the target and predicted output,
+    and calculates the return using a vectorized approach.
 
     Args:
         model (dqn.DQN): The trained DQN model to backtest.
         data (pandas.DataFrame): The data to use for backtesting.
+        scaler (sklearn.preprocessing.StandardScaler): The scaler used to inverse transform the data.
 
     Returns:
-        returns (pandas.DataFrame): The DataFrame with the backtest results.
+        return_df (pandas.DataFrame): A DataFrame with the strategy return, benchmark return, and their cumulative values at each time step.
     """
 
     # # Remove the target column from the data before making predictions
@@ -34,7 +37,9 @@ def backtest_model(model, data, scaler):
 
     # Select the columns to inverse transform
     cols_to_inverse_transform = [
-        col for col in data.columns if col not in ["lstm_feature", "target"]
+        col
+        for col in data.columns
+        if col not in ["lstm_feature", "target", "log_return"]
     ]
 
     # Inverse transform the selected columns
@@ -55,20 +60,32 @@ def backtest_model(model, data, scaler):
     # Create a 'position' column based on the predicted actions
     data["position"] = predicted_actions.replace({"buy": 1, "sell": 0, "hold": np.nan})
 
-    # Get the strategy return series
+    # Calculate the strategy return at each step
     data["strategy_return"] = data["position"].shift() * data["log_return"]
 
-    # Sum the log returns
-    total_log_return = data["strategy_return"].sum()
+    # Calculate the benchmark return at each step
+    data["benchmark_return_step"] = data["log_return"]
 
-    # Convert the total log return to a regular return
-    total_regular_return = np.exp(total_log_return) - 1
+    # Calculate the cumulative strategy return at each time step
+    data["cumulative_strategy_return"] = np.exp(data["strategy_return"].cumsum()) - 1
 
-    # Calculate the log return of a simple buy-and-hold strategy
-    benchmark_log_return = data["log_return"].sum()
+    # Calculate the cumulative benchmark return at each time step
+    data["cumulative_benchmark_return"] = np.exp(data["log_return"].cumsum()) - 1
 
-    # Convert the benchmark log return to a regular return
-    benchmark_regular_return = np.exp(benchmark_log_return) - 1
+    # Create a DataFrame with the strategy return, benchmark return, and their cumulative values at each time step
+    return_df = data[
+        [
+            "strategy_return",
+            "benchmark_return_step",
+            "cumulative_strategy_return",
+            "cumulative_benchmark_return",
+        ]
+    ]
 
-    print("Strategy Return: ", total_regular_return)
-    print("Benchmark Return: ", benchmark_regular_return)
+    # Drop rows with NaN values
+    return_df = return_df.dropna()
+
+    # Return the DataFrame
+    return return_df
+
+    return return_df
