@@ -7,7 +7,7 @@ if len(sys.argv) == 2 and sys.argv[1] == "all":
 else:
     pytest.main(
         [
-            "tests/learning/rl/models/test_dqn.py",
+            "tests/evaluation/test_performance_metrics.py",
             "--cov=src",
             "--cov-report",
             "html",

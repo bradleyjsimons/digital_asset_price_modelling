@@ -32,7 +32,10 @@ def evaluate_model(model, data, scaler):
 
     # Calculate performance metrics
     metrics = performance_metrics.calculate_performance_metrics(backtest_df)
-    print(metrics)
+
+    import pprint
+
+    pprint.pprint(metrics)
 
     # # Create visualizations
     # visualizations.plot_cumulative_returns(tot
