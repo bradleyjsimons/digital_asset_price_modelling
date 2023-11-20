@@ -8,7 +8,10 @@ import pandas as pd
 import numpy as np
 import pytest
 from unittest.mock import Mock
-from src.evaluation.backtesting import calculate_backtest_returns
+from src.evaluation.backtesting import (
+    calculate_backtest_returns,
+    calculate_benchmark_returns,
+)
 
 
 @pytest.fixture
@@ -69,9 +72,23 @@ def test_calculate_backtest_returns(mock_model, mock_data, mock_scaler):
     assert set(return_df.columns) == set(
         [
             "strategy_return",
-            "benchmark_return_step",
             "cumulative_strategy_return",
-            "cumulative_benchmark_return",
         ]
     )
     assert not return_df.isnull().values.any()
+
+
+def test_calculate_benchmark_returns(mock_data):
+    """
+    Test the calculate_benchmark_returns function.
+    """
+    benchmark_df = calculate_benchmark_returns(mock_data)
+
+    assert isinstance(benchmark_df, pd.DataFrame)
+    assert set(benchmark_df.columns) == set(
+        [
+            "benchmark_return_step",
+            "cumulative_benchmark_return",
+        ]
+    )
+    assert not benchmark_df.isnull().values.any()

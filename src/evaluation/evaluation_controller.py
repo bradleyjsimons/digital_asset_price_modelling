@@ -7,37 +7,40 @@ backtests the model, calculates various performance metrics, and creates visuali
 Functions:
     evaluate_model(model: keras.Model, scaler: Scaler, data: pandas.DataFrame): Evaluates the model using the provided data.
 """
+import matplotlib.pyplot as plt
 
 from src.evaluation import backtesting
 from src.evaluation import performance_metrics
-
-# from src.learning import metrics
-# from src.learning import visualizations
+from src.evaluation import visualizations
 
 
-def evaluate_model(model, data, scaler):
+def evaluate_models(models, data, scaler):
     """
-    Evaluates a trained model using the provided data.
+    Evaluates multiple trained models using the provided data.
 
-    The function backtests the model, calculates various performance metrics, and creates visualizations.
+    The function backtests each model, calculates various performance metrics, and creates visualizations.
 
     Args:
+        models (list of keras.Model): The trained models for evaluation.
         data (pandas.DataFrame): The data to use for evaluation.
         scaler (Scaler): The scaler used for data normalization.
-        model (keras.Model): The trained model for evaluation.
     """
+    backtest_dfs = []
+    metrics = []
 
-    # Backtest the model
-    backtest_df = backtesting.calculate_backtest_returns(model, data, scaler)
+    for model in models:
+        # Backtest the model
+        backtest_df = backtesting.calculate_backtest_returns(model, data, scaler)
+        backtest_dfs.append(backtest_df)
 
-    # Calculate performance metrics
-    metrics = performance_metrics.calculate_performance_metrics(backtest_df)
+        # Calculate performance metrics
+        metric = performance_metrics.calculate_performance_metrics(backtest_df)
+        metrics.append(metric)
 
-    import pprint
+    # Calculate benchmark returns
+    benchmark_df = backtesting.calculate_benchmark_returns(data)
+    backtest_dfs.append(benchmark_df)
+    labels = ["Model {}".format(i + 1) for i in range(len(models))] + ["Benchmark"]
 
-    pprint.pprint(metrics)
-
-    # # Create visualizations
-    # visualizations.plot_cumulative_returns(tot
-    # al_profit)
-    # visualizations.plot_growth_of_dollar(total_profit)
+    # Create visualizations
+    visualizations.plot_cumulative_returns(backtest_dfs, labels)

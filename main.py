@@ -64,8 +64,8 @@ def main():
         )
 
     # Evaluate the model
-    evaluation_controller.evaluate_model(
-        model,
+    evaluation_controller.evaluate_models(
+        [model],
         data,
         scaler,
     )
