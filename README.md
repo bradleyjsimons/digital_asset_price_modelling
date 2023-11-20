@@ -1,5 +1,12 @@
 # Utilizing Deep Q Network Agents for Reinforcement Learning in Blockchain Asset Forecasting
 
+## Current Status/Latest Update
+
+- Completed data collection, preprocessing, and feature extraction.
+- Developed and tested a Deep Q Network model for forecasting.
+- Performed backtesting and visualizations, analyzing metrics like Sharpe ratio and maximum drawdown.
+- Next steps include building infrastructure for extensive hyperparameter tuning and conducting numerous tests to compare and optimize models.
+
 ## Disclaimer
 
 This project, "An Integrated Approach to Blockchain Asset Modeling," is provided for educational and research purposes only. It is not intended for use in actual trading or financial decision-making. The authors and contributors offer this project as a demonstration of data analysis and machine learning techniques applied to blockchain asset data.
