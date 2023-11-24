@@ -32,10 +32,11 @@ from src.learning.rl.environment import TradingEnvironment
 from src.learning.rl.models import dqn
 from src.data import data_controller
 from src.utils import folder_manager
+from src.data.data_cleaning import normalize_data
 
 
-NUM_EPISODES = 10
-MAX_STEPS = 10
+NUM_EPISODES = 5
+MAX_STEPS = 5
 BATCH_SIZE = 64
 
 
@@ -57,10 +58,10 @@ def prep_data_and_train_model(start_date, end_date, base_model_dir="src/models/"
     model_dir = folder_manager.create_model_directory(base_model_dir)
 
     # Fetch and prep the data
-    data, scaler = data_controller.main(start_date, end_date, model_dir)
+    data = data_controller.main(start_date, end_date, model_dir)
 
     # Train and store model
-    model = train_model(data, model_dir)
+    model, scaler = train_model(data, model_dir)
 
     return model, data, scaler
 
@@ -108,8 +109,21 @@ def train_model(data, model_dir):
     Returns:
         model (dqn.DQN): The trained DQN model.
     """
+
     # Drop the target variable for RL
     training_data = data.drop(columns=["target"])
+
+    # Separate the log_returns
+    log_returns = training_data["log_return"]
+    training_data = training_data.drop(columns=["log_return"])
+
+    # Normalize the data
+    training_data, scaler = normalize_data(
+        training_data, path=os.path.join(model_dir, "scaler.pkl")
+    )
+
+    # Add the log_return back in
+    training_data["log_return"] = log_returns
 
     # Initialize the trading environment
     print("setting up RL learning environment...")
@@ -157,7 +171,7 @@ def train_model(data, model_dir):
     print("model trained and saved")
 
     # return the trained model only
-    return model.model
+    return model.model, scaler
 
 
 def load_trained_model(model_path):

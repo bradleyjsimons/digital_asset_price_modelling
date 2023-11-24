@@ -32,14 +32,14 @@ def main():
     start_date = "2018-01-01"
     end_date = "2023-01-01"
 
-    should_train = True  # should train new model or not
+    should_train = False  # should train new model or not
 
     if should_train:
         model, data, scaler = learning_controller.prep_data_and_train_model(
             start_date, end_date
         )
     else:
-        existing_model_folder_name = "20231120"
+        existing_model_folder_name = "20231121"
         model, data, scaler = learning_controller.load_model_and_data(
             existing_model_folder_name
         )

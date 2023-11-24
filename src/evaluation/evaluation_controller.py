@@ -29,13 +29,15 @@ def evaluate_models(models, data, scaler):
     metrics = []
 
     for model in models:
-        # Backtest the model
         backtest_df = backtesting.calculate_backtest_returns(model, data, scaler)
         backtest_dfs.append(backtest_df)
 
         # Calculate performance metrics
         metric = performance_metrics.calculate_performance_metrics(backtest_df)
         metrics.append(metric)
+
+    # print(metrics)
+    # print(backtest_dfs)
 
     # Calculate benchmark returns
     benchmark_df = backtesting.calculate_benchmark_returns(data)

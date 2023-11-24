@@ -8,7 +8,10 @@ Functions:
 
 This module uses functions from the src.api, src.data, and src.features modules. The resulting DataFrame is stored in a CSV file in the specified model directory.
 """
-
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
+import pandas as pd
+import joblib
 
 from src.api.yfinance import fetch_bitcoin_data
 from src.data.data_cleaning import clean_data, normalize_data
@@ -17,9 +20,6 @@ from src.features.feature_engineering import (
     add_blockchain_data,
     extract_lstm_features,
 )
-
-import pandas as pd
-import joblib
 
 
 def main(start_date, end_date, model_dir):
@@ -49,14 +49,11 @@ def main(start_date, end_date, model_dir):
 
     # Normalize the data before extraction
     print("normalizing data...")
-    df, scaler = normalize_data(df, path=f"{model_dir}/scaler.pkl")
+    df, scaler = normalize_data(df)
 
     # Extract features
     print("extracting additional features using lstm...")
     df = extract_lstm_features(df, sequence_length=30)
-
-    # Add the log returns column back to the DataFrame
-    df["log_return"] = log_returns
 
     # add the target variable
     df["target"] = (df["Close"].shift(-1) > df["Close"]).astype(int)
@@ -65,10 +62,29 @@ def main(start_date, end_date, model_dir):
     print("cleaning data for model...")
     df = clean_data(df)
 
+    # Analyze feature importance
+    print("analyzing feature importance...")
+    top_features = analyze_feature_importance(df)
+
+    # Remove the target adn lstm features columns before inverse transforming
+    target = df.pop("target")
+    lstm_features = df.pop("lstm_feature")
+
+    # Inverse transform the data before saving
+    df = pd.DataFrame(scaler.inverse_transform(df), columns=df.columns, index=df.index)
+
+    # Add the log returns, lstm features, and target columns back to the DataFrame
+    df["target"] = target
+    df["log_return"] = log_returns
+    df["lstm_feature"] = lstm_features
+
+    # Select only the top features and the target column
+    df = df[top_features + ["target"] + ["log_return"]]
+
     # store the data in the model directory
     df.to_csv(f"{model_dir}/data.csv")
 
-    return df, scaler
+    return df
 
 
 def load_data(data_path):
@@ -98,3 +114,48 @@ def load_scaler(scaler_path):
     """
     scaler = joblib.load(scaler_path)
     return scaler
+
+
+def analyze_feature_importance(df, target_column="target", top_percent=0.5):
+    """
+    Analyze feature importance using a Random Forest model and return the top percent of features.
+
+    :param df: The DataFrame containing the features and target variable.
+    :param target_column: The name of the target variable column.
+    :param top_percent: The top percent of features to keep based on their importance. Default is 0.5 (50%).
+    :return: List of top features.
+    """
+    features = df.drop(target_column, axis=1)
+    target = df[target_column]
+
+    # Split data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(
+        features, target, test_size=0.3, random_state=42
+    )
+
+    # Create and train the Random Forest model
+    model = RandomForestRegressor(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+
+    # Get feature importances
+    importances = model.feature_importances_
+
+    # Create a DataFrame of feature importances
+    feature_importances = pd.DataFrame(
+        {"feature": features.columns, "importance": importances}
+    )
+
+    # Sort the DataFrame by importance
+    feature_importances.sort_values("importance", ascending=False, inplace=True)
+
+    # Calculate the number of features to keep
+    num_features = int(len(features.columns) * top_percent)
+
+    # Get the top features
+    top_features = feature_importances["feature"][:num_features].tolist()
+
+    # Print feature importances
+    for i, row in feature_importances.iterrows():
+        print(f"{row['feature']}: {row['importance']}")
+
+    return top_features

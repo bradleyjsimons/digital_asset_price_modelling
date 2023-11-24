@@ -7,17 +7,15 @@
 - Performed backtesting and visualizations, analyzing metrics like Sharpe ratio and maximum drawdown.
 - Next steps include building infrastructure for extensive hyperparameter tuning and conducting numerous tests to compare and optimize models.
 
-## Disclaimer
+# Financial Disclaimer for "An Integrated Approach to Blockchain Asset Modeling"
 
-This project, "An Integrated Approach to Blockchain Asset Modeling," is provided for educational and research purposes only. It is not intended for use in actual trading or financial decision-making. The authors and contributors offer this project as a demonstration of data analysis and machine learning techniques applied to blockchain asset data.
+**IMPORTANT NOTICE**: The project "An Integrated Approach to Blockchain Asset Modeling" is provided exclusively for educational and research purposes. It is not intended for use in actual trading or financial decision-making. The content and code within this project are for demonstration of data analysis and machine learning techniques applied to blockchain asset data and should not be construed as financial advice.
 
-The content and code within this project are not financial advice and should not be interpreted as such. Users are solely responsible for any actions taken based on the information provided in this project. The authors and contributors make no representations or warranties about the accuracy, reliability, completeness, or timeliness of the content or code.
+By using this software, you agree to hold harmless and exempt the authors and contributors from any claims, damages, losses, or legal responsibilities arising from its use. The authors and contributors make no representations or warranties regarding the accuracy, reliability, completeness, or timeliness of the content or code and expressly disclaim all liability for any financial losses, damages, or other negative consequences that may result from such use.
 
-Any application of the techniques, ideas, or code in this project is at the user's own risk. The authors and contributors expressly disclaim all liability for any financial losses, damages, or other negative consequences that may result from such use.
+Any application of the techniques, ideas, or code in this project is at the user's own risk. Users are solely responsible for any actions taken based on the information provided in this project and are advised to conduct their own research and consult with professional financial advisors before making any investment decisions.
 
-Users are advised to conduct their own research and consult with professional financial advisors before making any investment decisions. The laws and regulations regarding financial trading and investments vary across jurisdictions, and users are responsible for ensuring their compliance with such laws in their respective localities.
-
-This project does not promote, encourage, or endorse any form of financial speculation or gambling. The authors and contributors are not liable for any misuse of the project’s content or code.
+The laws and regulations regarding financial trading and investments vary across jurisdictions, and users are responsible for ensuring their compliance with such laws in their respective localities. This project does not promote, encourage, or endorse any form of financial speculation or gambling, and the authors and contributors are not liable for any misuse of the project’s content or code.
 
 By using this project, you acknowledge and agree to these terms.
 

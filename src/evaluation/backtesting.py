@@ -41,22 +41,26 @@ def calculate_backtest_returns(model, data, scaler):
     """
 
     # Remove the target column from the data before making predictions
-    data_without_target = data.drop(columns=["target"])
+    log_returns = data["log_return"]
+    data_without_target = data.drop(
+        columns=[
+            "target",
+            "log_return",
+        ]
+    )
+
+    # Normalize the data
+    normalized_data = scaler.transform(data_without_target)
+
+    # add the log_returns back to the dataframe
+    data["log_return"] = log_returns
+
+    # Calculate the predicted output
+    predicted_output = model.predict(normalized_data)
+    print(predicted_output)
 
     # Calculate the predicted output
     predicted_output = model.predict(data_without_target)
-
-    # Select the columns to inverse transform
-    cols_to_inverse_transform = [
-        col
-        for col in data.columns
-        if col not in ["lstm_feature", "target", "log_return"]
-    ]
-
-    # Inverse transform the selected columns
-    data[cols_to_inverse_transform] = scaler.inverse_transform(
-        data[cols_to_inverse_transform]
-    )
 
     # Convert the predicted output to a DataFrame
     predicted_output_df = pd.DataFrame(
@@ -84,6 +88,7 @@ def calculate_backtest_returns(model, data, scaler):
             "cumulative_strategy_return",
         ]
     ]
+    print(return_df)
 
     # Drop rows with NaN values
     return_df = return_df.dropna()
